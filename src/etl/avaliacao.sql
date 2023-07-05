@@ -1,4 +1,3 @@
--- Databricks notebook source
 with tb_pedido as (
   select 
     distinct
@@ -10,8 +9,8 @@ with tb_pedido as (
   left join silver.olist.item_pedido t2
   on t1.idPedido = t2.idPedido
 
-  where t1.dtPedido < '2018-01-01'
-  and t1.dtPedido >= add_months('2018-01-01', -6)
+  where t1.dtPedido < '{date}'
+  and t1.dtPedido >= add_months('{date}', -6)
   and t2.idVendedor is not null
 ),
 
@@ -39,7 +38,8 @@ group by idVendedor
 )
 
 select 
-  '2018-01-01' as dtReference,
+  '{date}' as dtReference,
+  now() as dtIngestion,
   * 
 from tb_summary
 ;
