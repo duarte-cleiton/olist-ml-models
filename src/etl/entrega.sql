@@ -40,5 +40,5 @@ select
   avg(datediff(dtEstimativaEntrega, coalesce(dtEntregue, '{date}'))) as qtdeDiasEntregaPromessa
 
 from tb_pedido
-group by idVendedor
+group by 1,2,3
 ;
