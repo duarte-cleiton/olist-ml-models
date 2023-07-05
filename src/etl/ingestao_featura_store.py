@@ -58,7 +58,7 @@ else:
     print("A table exisite, carga incremental")
     for i in tqdm(dates):
         spark.sql(f"DELETE FROM {database}.{table_name} WHERE dtReference = '{i}'")
-        (spark.sql(query.format(date=dates[0]))
+        (spark.sql(query.format(date=i))
             .coalesce(1)
             .write
             .format("delta")
