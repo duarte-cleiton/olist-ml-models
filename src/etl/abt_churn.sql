@@ -123,13 +123,32 @@ with tb_features as (
   and t1.dtReference = t6.dtReference
 
   where t1.qtdeRecencia <= 45
+),
+
+tb_event as (
+  select
+    idVendedor,
+    date(dtPedido) as dtPedido
+  from silver.olist.item_pedido t1
+  left join silver.olist.pedido t2
+  on t1.idPedido = t2.idPedido
+  where t1.idVendedor is not null
 )
 
-select * from tb_features
+select 
+    t1.dtReference,
+    t1.idVendedor,
+    t2.dtPedido
+
+    from tb_features t1
+
+    left join tb_event t2
+    on t1.idVendedor = t2.idVendedor
+    and t1.dtReference <= t2.dtPedido
+    
+    and datediff(dtPedido, dtReference) <= 45 - qtdeRecencia
 ;
 
 -- COMMAND ----------
 
--- MAGIC %python
--- MAGIC
--- MAGIC df = spark.table("silver.analytics.fs_vendedor_produto")
+select * from silver.analytics.fs_vendedor_vendas order by dtReference;
