@@ -133,20 +133,38 @@ tb_event as (
   left join silver.olist.pedido t2
   on t1.idPedido = t2.idPedido
   where t1.idVendedor is not null
+),
+
+tb_flag as (
+
+  select 
+      t1.dtReference,
+      t1.idVendedor,
+      min(t2.dtPedido) as dtProxPedido
+
+      from tb_features t1
+
+      left join tb_event t2
+      on t1.idVendedor = t2.idVendedor
+      and t1.dtReference <= t2.dtPedido
+      
+      and datediff(dtPedido, dtReference) <= 45 - qtdeRecencia
+
+      group by 1,2
 )
 
-select 
-    t1.dtReference,
-    t1.idVendedor,
-    t2.dtPedido
+select
+  t1.*,
+  case when dtProxPedido is null then 1 else 0 end as flChurn
 
-    from tb_features t1
+  from tb_features t1
 
-    left join tb_event t2
-    on t1.idVendedor = t2.idVendedor
-    and t1.dtReference <= t2.dtPedido
-    
-    and datediff(dtPedido, dtReference) <= 45 - qtdeRecencia
+  left join tb_flag t2
+  on t1.idVendedor = t2.idVendedor
+  and t1.dtReference = t2.dtReference
+
+  order by t1.idVendedor, t2.dtReference
+
 ;
 
 -- COMMAND ----------

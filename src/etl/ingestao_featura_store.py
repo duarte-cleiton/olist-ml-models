@@ -55,16 +55,15 @@ if not table_exists(database, table_name):
         .partitionBy("dtReference")
         .saveAsTable(f"{database}.{table_name}"))
     print("ok")
-else:
     print("A table exisite, carga incremental")
-    for i in tqdm(dates):
-        print(f"carregando dtReference {i}...")
-        spark.sql(f"DELETE FROM {database}.{table_name} WHERE dtReference = '{i}'")
-        (spark.sql(query.format(date=i))
-            .coalesce(1)
-            .write
-            .format("delta")
-            .mode("append")
-            .saveAsTable(f"{database}.{table_name}"))
-    print("ok")
+for i in tqdm(dates):
+    print(f"carregando dtReference {i}...")
+    spark.sql(f"DELETE FROM {database}.{table_name} WHERE dtReference = '{i}'")
+    (spark.sql(query.format(date=i))
+        .coalesce(1)
+        .write
+        .format("delta")
+        .mode("append")
+        .saveAsTable(f"{database}.{table_name}"))
+print("ok")
 
