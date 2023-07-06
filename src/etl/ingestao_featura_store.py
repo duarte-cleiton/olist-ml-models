@@ -67,9 +67,3 @@ else:
             .saveAsTable(f"{database}.{table_name}"))
     print("ok")
 
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC
-# MAGIC select * from silver.analytics.fs_vendedor_produto;
