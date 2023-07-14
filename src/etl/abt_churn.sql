@@ -1,4 +1,7 @@
 -- Databricks notebook source
+drop table if exists silver.analytics.abt_olist_churn;
+create table silver.analytics.abt_olist_churn as
+
 with tb_features as (
   select 
     t1.dtReference,
@@ -163,10 +166,12 @@ select
   on t1.idVendedor = t2.idVendedor
   and t1.dtReference = t2.dtReference
 
+  where day(t1.dtReference) = 1
+
   order by t1.idVendedor, t2.dtReference
 
 ;
 
 -- COMMAND ----------
 
-select * from silver.analytics.fs_vendedor_vendas order by dtReference;
+select * from silver.analytics.abt_olist_churn;
